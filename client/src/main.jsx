@@ -1,10 +1,14 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './app.css'   // ← updated to your main CSS
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// App.jsx
+export default function App() {
+  return (
+    <div className="app">
+      <header>
+        <h1>My Embroidery App</h1>
+        <p>Upload your designs and generate mockups</p>
+      </header>
+      <main>
+        {/* Add your components here */}
+      </main>
+    </div>
+  );
+}
