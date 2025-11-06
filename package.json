@@ -1,19 +1,21 @@
 {
-  "name": "client",
-  "version": "0.0.0",
-  "private": true,
+  "name": "embroidery-app",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "vite --root client",
-    "build": "vite build --root client",
-    "vercel-build": "pnpm install --no-frozen-lockfile && vite build --root client"
+    "dev": "node server.js",
+    "dev:client": "cd client && npm run dev",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:client\"",
+    "build": "cd client && npm run build",
+    "start": "node server.js"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "axios": "^1.6.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "replicate": "^0.25.0"
   },
   "devDependencies": {
-    "vite": "^4.5.0",
-    "@vitejs/plugin-react": "^4.0.0"
+    "concurrently": "^8.2.2"
   }
 }
