@@ -1,0 +1,19 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --root client",
+    "build": "vite build --root client",
+    "vercel-build": "pnpm install --no-frozen-lockfile && vite build --root client"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "vite": "^4.5.0",
+    "@vitejs/plugin-react": "^4.0.0"
+  }
+}
