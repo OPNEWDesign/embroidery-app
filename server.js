@@ -1,77 +1,86 @@
 import express from 'express';
 import cors from 'cors';
-import Replicate from 'replicate';
 import dotenv from 'dotenv';
+import fetch from 'node-fetch';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
-// Initialize Replicate
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-});
-
-// Middleware
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json());
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ status: 'OK' });
 });
 
-// Generate embroidery variations
+// Generate embroidery images
 app.post('/api/generate', async (req, res) => {
+  try {
+    const { prompt, parameters } = req.body;
+
+    const response = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: 'YOUR_MODEL_VERSION_ID', // replace with your replicate model version
+        input: { prompt, ...parameters }
+      }),
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to generate embroidery' });
+  }
+});
+
+// Upscale selected image
+app.post('/api/upscale', async (req, res) => {
+  try {
+    const { imageUrl, scale } = req.body;
+
+    const response = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: 'YOUR_UPSCALE_MODEL_VERSION_ID', // replace with your replicate model version
+        input: { image: imageUrl, scale }
+      }),
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to upscale image' });
+  }
+});
+
+// Background removal (free)
+app.post('/api/remove-background', async (req, res) => {
   try {
     const { imageUrl } = req.body;
 
-    if (!imageUrl) {
-      return res.status(400).json({ error: 'Image URL is required' });
-    }
+    // Replace this with your chosen background removal API or service
+    const removedBackgroundUrl = imageUrl; // placeholder: returns same image
 
-    console.log('Generating embroidery variations...');
-
-    // Generate 4 variations with different embroidery styles
-    const prompts = [
-      "embroidery art style, detailed stitching, fabric texture, traditional embroidery",
-      "cross-stitch pattern, pixel art embroidery, colorful threads, handmade craft",
-      "silk embroidery, elegant stitching, fine details, luxury textile art",
-      "modern embroidery, bold colors, contemporary textile art, artistic stitching"
-    ];
-
-    const promises = prompts.map(async (prompt) => {
-      const output = await replicate.run(
-        "black-forest-labs/flux-dev",
-        {
-          input: {
-            prompt: `${prompt}, based on this image`,
-            image: imageUrl,
-            guidance: 7.5,
-            num_inference_steps: 28,
-            output_format: "png"
-          }
-        }
-      );
-      
-      return Array.isArray(output) ? output[0] : output;
-    });
-
-    const results = await Promise.all(promises);
-
-    console.log('Generation complete!');
-    res.json({ images: results });
-
-  } catch (error) {
-    console.error('Generation error:', error);
-    res.status(500).json({ 
-      error: 'Failed to generate images',
-      details: error.message 
-    });
+    res.json({ result: removedBackgroundUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to remove background' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
