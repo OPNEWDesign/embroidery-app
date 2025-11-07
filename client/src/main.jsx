@@ -1,14 +1,10 @@
-// App.jsx
-export default function App() {
-  return (
-    <div className="app">
-      <header>
-        <h1>My Embroidery App</h1>
-        <p>Upload your designs and generate mockups</p>
-      </header>
-      <main>
-        {/* Add your components here */}
-      </main>
-    </div>
-  );
-}
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css'; // optional if you have global styles
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
