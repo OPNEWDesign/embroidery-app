@@ -192,11 +192,11 @@ footer {
   header h1 {
     font-size: 2rem;
   }
-  
+
   main {
     padding: 1.5rem;
   }
-  
+
   .results-grid {
     grid-template-columns: 1fr;
   }
